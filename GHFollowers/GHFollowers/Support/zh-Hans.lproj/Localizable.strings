@@ -1,0 +1,57 @@
+/* 
+  Localizable.strings (Chinese Simplified)
+  GHFollowers
+  
+  Created by CHI YU CHAN on 4/12/2024.
+*/
+
+// MARK: - Error Messages
+"error.invalidURL" = "构建 URL 时出错,请重试。";
+"error.unableToComplete" = "无法完成您的请求,请检查您的网络连接。";
+"error.invalidResponse" = "服务器返回的响应无效,请重试。";
+"error.invalidData" = "从服务器接收到的数据无效,请重试。";
+"error.unableToFavorite" = "收藏此用户时出错,请重试。";
+"error.alreadyInFavorites" = "您已经收藏过此用户了,看来您真的很喜欢他们。";
+
+// MARK: - Search Screen
+"search.emptyUsername" = "空用户名";
+"search.emptyUsernameMessage" = "请输入用户名。我们需要知道找谁 😀";
+"search.getFollowers" = "获取关注者";
+
+// MARK: - Follower List Screen
+"followerList.noFollowers" = "无关注者";
+"followerList.noFollowersMessage" = "此用户没有关注者。去关注他们吧。";
+"followerList.searchPlaceholder" = "搜索用户名";
+"followerList.success" = "成功!";
+"followerList.favoriteSuccessMessage" = "您已成功收藏此用户。";
+"followerList.hooray" = "太棒了!";
+
+// MARK: - User Info Screen
+"userInfo.invalidURL" = "无效的 URL";
+"userInfo.invalidURLMessage" = "此用户的 URL 无效";
+"userInfo.noFollowers" = "无关注者";
+"userInfo.noFollowersMessage" = "此用户没有关注者。真遗憾 😳。";
+"userInfo.soSad" = "太可惜了";
+"userInfo.githubSince" = "GitHub 注册于 %@";
+
+// MARK: - Favorites Screen
+"favorites.title" = "收藏";
+"favorites.noFavorites" = "无收藏";
+"favorites.noFavoritesMessage" = "在关注者列表页面添加收藏";
+"favorites.unableToRemove" = "无法移除";
+
+// MARK: - Alert
+"alert.defaultTitle" = "出错了";
+"alert.defaultMessage" = "无法完成请求";
+"alert.ok" = "好的";
+"alert.somethingWentWrong" = "出错了";
+"alert.badStuffHappened" = "发生错误";
+"alert.retry" = "我们目前无法完成您的任务。请重试。";
+
+// MARK: - Item Info
+"itemInfo.publicRepos" = "公开仓库";
+"itemInfo.publicGists" = "公开 Gist";
+"itemInfo.following" = "正在关注";
+"itemInfo.followers" = "关注者";
+"itemInfo.getFollowers" = "获取关注者";
+"itemInfo.githubProfile" = "GitHub 个人资料";

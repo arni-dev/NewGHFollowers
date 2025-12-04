@@ -1,0 +1,93 @@
+<svg width="1000" height="950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow-solid" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+    </marker>
+    <marker id="arrow-dashed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#666" />
+    </marker>
+  </defs>
+
+  <rect width="1000" height="950" fill="#ffffff" />
+
+  <g transform="translate(50, 20)">
+    <rect x="0" y="0" width="140" height="40" fill="#d1ecf1" stroke="#17a2b8" rx="5" />
+    <text x="70" y="25" text-anchor="middle" font-family="Monaco, Consolas, monospace" font-size="12" font-weight="bold">SearchVC.swift</text>
+    <line x1="70" y1="40" x2="70" y2="900" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5" />
+  </g>
+
+  <g transform="translate(230, 20)">
+    <rect x="0" y="0" width="160" height="40" fill="#e2e3e5" stroke="#6c757d" rx="5" />
+    <text x="80" y="25" text-anchor="middle" font-family="Monaco, Consolas, monospace" font-size="12" font-weight="bold">SearchCoordinator.swift</text>
+    <line x1="80" y1="40" x2="80" y2="900" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5" />
+  </g>
+
+  <g transform="translate(430, 20)">
+    <rect x="0" y="0" width="160" height="40" fill="#ffeeba" stroke="#ffc107" rx="5" />
+    <text x="80" y="25" text-anchor="middle" font-family="Monaco, Consolas, monospace" font-size="12" font-weight="bold">FollowerListVM.swift</text>
+    <line x1="80" y1="40" x2="80" y2="900" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5" />
+  </g>
+
+  <g transform="translate(630, 20)">
+    <rect x="0" y="0" width="150" height="40" fill="#d1ecf1" stroke="#17a2b8" rx="5" />
+    <text x="75" y="25" text-anchor="middle" font-family="Monaco, Consolas, monospace" font-size="12" font-weight="bold">FollowerListVC.swift</text>
+    <line x1="75" y1="40" x2="75" y2="900" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5" />
+  </g>
+
+  <g transform="translate(820, 20)">
+    <rect x="0" y="0" width="160" height="40" fill="#c3e6cb" stroke="#28a745" rx="5" />
+    <text x="80" y="25" text-anchor="middle" font-family="Monaco, Consolas, monospace" font-size="12" font-weight="bold">NetworkManager.swift</text>
+    <line x1="80" y1="40" x2="80" y2="900" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5" />
+  </g>
+
+  <text x="10" y="90" font-family="Arial" font-size="11" fill="#555">1. 用户点击按钮</text>
+  <line x1="120" y1="100" x2="160" y2="100" stroke="#333" stroke-width="2" />
+  <text x="120" y="115" font-family="Monaco" font-size="11">pushFollowerListVC()</text>
+  <rect x="115" y="100" width="10" height="40" fill="#333" />
+  
+  <line x1="120" y1="140" x2="310" y2="140" stroke="#28a745" stroke-width="2" marker-end="url(#arrow-solid)" />
+  <text x="150" y="135" font-family="Monaco" font-size="11" fill="#28a745">closure(username)</text>
+
+  <rect x="305" y="140" width="10" height="80" fill="#999" />
+  <text x="320" y="160" font-family="Monaco" font-size="11">goToFollowerList(username)</text>
+  
+  <line x1="315" y1="180" x2="510" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrow-solid)" />
+  <text x="340" y="175" font-family="Monaco" font-size="11">init(username: username)</text>
+  <rect x="505" y="180" width="10" height="20" fill="#ffc107" />
+
+  <line x1="315" y1="210" x2="705" y2="210" stroke="#333" stroke-width="2" marker-end="url(#arrow-solid)" />
+  <text x="340" y="205" font-family="Monaco" font-size="11">init(viewModel: vm)</text>
+  <rect x="700" y="210" width="10" height="660" fill="#17a2b8" opacity="0.3"/> <text x="720" y="250" font-family="Monaco" font-size="11" font-weight="bold">viewDidLoad()</text>
+  
+  <line x1="705" y1="270" x2="510" y2="270" stroke="#fd7e14" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-solid)" />
+  <text x="530" y="265" font-family="Monaco" font-size="11" fill="#fd7e14">vm.$followers.sink { ... }</text>
+  <text x="530" y="280" font-family="Arial" font-size="10" fill="#999">(View 监听 VM 数据变化)</text>
+
+  <line x1="705" y1="320" x2="510" y2="320" stroke="#333" stroke-width="2" marker-end="url(#arrow-solid)" />
+  <text x="540" y="315" font-family="Monaco" font-size="11">vm.getFollowers()</text>
+  <rect x="505" y="320" width="10" height="250" fill="#ffc107" opacity="0.5" />
+
+  <line x1="505" y1="340" x2="705" y2="340" stroke="#333" stroke-width="1" marker-end="url(#arrow-solid)" />
+  <text x="540" y="335" font-family="Monaco" font-size="10" fill="#666">@Published isLoading = true</text>
+  <text x="720" y="350" font-family="Arial" font-size="10" fill="#17a2b8">[UI] 显示转圈圈</text>
+
+  <line x1="510" y1="380" x2="900" y2="380" stroke="#28a745" stroke-width="2" marker-end="url(#arrow-solid)" />
+  <text x="530" y="375" font-family="Monaco" font-size="11" fill="#28a745">await NetworkManager.shared.getFollowers()</text>
+  <rect x="895" y="380" width="10" height="100" fill="#28a745" opacity="0.5" />
+
+  <text x="915" y="420" font-family="Arial" font-size="10" fill="#666">URLSession / Decoding...</text>
+
+  <line x1="900" y1="480" x2="515" y2="480" stroke="#28a745" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#arrow-solid)" />
+  <text x="550" y="470" font-family="Monaco" font-size="11" fill="#28a745">return [Follower]</text>
+
+  <text x="390" y="520" font-family="Monaco" font-size="11" fill="#666">self.followers = data</text>
+  <text x="390" y="535" font-family="Monaco" font-size="11" fill="#666">self.isLoading = false</text>
+
+  <line x1="515" y1="560" x2="705" y2="560" stroke="#fd7e14" stroke-width="2" marker-end="url(#arrow-solid)" />
+  <text x="530" y="555" font-family="Monaco" font-size="11" fill="#fd7e14">Send Value (Combine)</text>
+
+  <rect x="715" y="580" width="10" height="60" fill="#17a2b8" />
+  <text x="730" y="595" font-family="Monaco" font-size="11">updateData(on: followers)</text>
+  <text x="730" y="615" font-family="Arial" font-size="10" fill="#666">(DiffableDataSource Snapshot)</text>
+
+</svg>

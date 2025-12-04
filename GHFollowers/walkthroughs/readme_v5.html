@@ -1,0 +1,211 @@
+<svg width="1000" height="700" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" onload="init()">
+  <style>
+    .lane-line { stroke: #444; stroke-width: 2; stroke-dasharray: 5,5; }
+    .actor-box { fill: #2c3e50; stroke-width: 2; rx: 5; ry: 5; }
+    .actor-text { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle; fill: white; }
+    .step-text { font-family: 'PingFang SC', sans-serif; font-size: 16px; fill: #ecf0f1; font-weight: bold; text-anchor: middle; }
+    .desc-box { fill: #34495e; stroke: #7f8c8d; stroke-width: 1; rx: 5; }
+    .desc-text { font-family: 'PingFang SC', sans-serif; font-size: 14px; fill: #bdc3c7; text-anchor: middle; }
+    .button { cursor: pointer; }
+    .button-rect { fill: #27ae60; rx: 10; ry: 10; transition: fill 0.3s; }
+    .button-rect:hover { fill: #2ecc71; }
+    .button-text { font-family: 'PingFang SC', sans-serif; font-size: 18px; fill: white; font-weight: bold; text-anchor: middle; pointer-events: none; }
+    .highlight-text { fill: #f1c40f; font-weight: bold; }
+  </style>
+
+  <script type="text/ecmascript">
+    <![CDATA[
+      var currentStep = 0;
+      var totalSteps = 8;
+      
+      function init() {
+        updateDescription("准备就绪：点击下方按钮开始演示代码流转");
+      }
+
+      function nextStep() {
+        if (currentStep >= totalSteps) {
+          resetAnimation();
+          return;
+        }
+        
+        currentStep++;
+        runStep(currentStep);
+      }
+
+      function runStep(step) {
+        // 隐藏所有之前的动态元素（简化处理）
+        // 触发对应的 SMIL 动画
+        var animId = "anim_step" + step;
+        var animElement = document.getElementById(animId);
+        if (animElement) {
+          animElement.beginElement();
+        }
+
+        // 更新文字描述
+        var desc = "";
+        switch(step) {
+          case 1: desc = "步骤 1: 用户点击按钮 -> SearchVC 不直接跳转，而是执行闭包通知 Coordinator"; break;
+          case 2: desc = "步骤 2: Coordinator 收到通知 -> 初始化 ListViewModel (准备业务逻辑)"; break;
+          case 3: desc = "步骤 3: Coordinator -> 初始化 ListVC 并注入 ViewModel (依赖注入，解耦)"; break;
+          case 4: desc = "步骤 4: ListVC 加载 (viewDidLoad) -> 立即订阅 ViewModel 的数据变化 (Combine)"; break;
+          case 5: desc = "步骤 5: ListVC -> 调用 vm.getFollowers() 请求数据"; break;
+          case 6: desc = "步骤 6: ViewModel -> NetworkManager 发起异步请求 (Async/Await)"; break;
+          case 7: desc = "步骤 7: NetworkManager -> 数据返回 (JSON 解析完成)"; break;
+          case 8: desc = "步骤 8: ViewModel 更新 @Published -> Combine 自动通知 VC -> UI 刷新"; break;
+        }
+        updateDescription(desc);
+        updateButtonText(step === totalSteps ? "演示结束 (点击重置)" : "点击执行下一步 (" + step + "/" + totalSteps + ")");
+      }
+
+      function resetAnimation() {
+        currentStep = 0;
+        updateDescription("已重置：准备重新开始");
+        updateButtonText("点击执行下一步");
+        // 这里理论上需要重置所有 SVG 元素位置，为简化，重新加载页面或简单重置文案即可
+        // 在 SVG 内部完全重置 SMIL 状态比较复杂，这里主要重置逻辑计数
+      }
+
+      function updateDescription(text) {
+        document.getElementById("status-text").textContent = text;
+      }
+      
+      function updateButtonText(text) {
+        document.getElementById("btn-label").textContent = text;
+      }
+    ]]>
+  </script>
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3498db" />
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2ecc71" />
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#f1c40f" />
+    </marker>
+  </defs>
+
+  <rect width="1000" height="700" fill="#1e1e1e" />
+
+  <line x1="150" y1="80" x2="150" y2="550" class="lane-line"/>
+  <line x1="350" y1="80" x2="350" y2="550" class="lane-line"/>
+  <line x1="550" y1="80" x2="550" y2="550" class="lane-line"/>
+  <line x1="750" y1="80" x2="750" y2="550" class="lane-line"/>
+  <line x1="950" y1="80" x2="950" y2="550" class="lane-line"/>
+
+  <g transform="translate(150, 60)">
+    <rect x="-70" y="-25" width="140" height="50" class="actor-box" stroke="#3498db"/>
+    <text y="5" class="actor-text">SearchVC</text>
+    <text y="20" class="actor-text" font-size="10" fill="#aaa">(视图层)</text>
+  </g>
+  
+  <g transform="translate(350, 60)">
+    <rect x="-70" y="-25" width="140" height="50" class="actor-box" stroke="#9b59b6"/>
+    <text y="5" class="actor-text">Coordinator</text>
+    <text y="20" class="actor-text" font-size="10" fill="#aaa">(导航层)</text>
+  </g>
+
+  <g transform="translate(550, 60)">
+    <rect x="-70" y="-25" width="140" height="50" class="actor-box" stroke="#f1c40f"/>
+    <text y="5" class="actor-text">ListViewModel</text>
+    <text y="20" class="actor-text" font-size="10" fill="#aaa">(逻辑层)</text>
+  </g>
+
+  <g transform="translate(750, 60)">
+    <rect x="-70" y="-25" width="140" height="50" class="actor-box" stroke="#3498db"/>
+    <text y="5" class="actor-text">ListVC</text>
+    <text y="20" class="actor-text" font-size="10" fill="#aaa">(视图层)</text>
+  </g>
+
+  <g transform="translate(950, 60)">
+    <rect x="-70" y="-25" width="140" height="50" class="actor-box" stroke="#2ecc71"/>
+    <text y="5" class="actor-text">Network</text>
+    <text y="20" class="actor-text" font-size="10" fill="#aaa">(服务层)</text>
+  </g>
+
+  <rect x="100" y="580" width="800" height="40" class="desc-box" fill="#2c3e50"/>
+  <text id="status-text" x="500" y="605" class="step-text" fill="#f1c40f">准备就绪：点击下方按钮开始演示代码流转</text>
+
+  <g class="button" onclick="nextStep()" transform="translate(400, 640)">
+    <rect width="200" height="40" class="button-rect" id="btn-rect"/>
+    <text id="btn-label" x="100" y="26" class="button-text">点击执行下一步</text>
+  </g>
+
+  <circle id="orb1" r="8" fill="#3498db" opacity="0">
+    <animateMotion id="anim_step1" begin="indefinite" dur="1s" path="M150,150 L350,150" fill="freeze" />
+    <animate id="op1" begin="anim_step1.begin" attributeName="opacity" from="0" to="1" dur="0.1s" fill="freeze"/>
+  </circle>
+  <text x="250" y="140" font-size="12" fill="#3498db" text-anchor="middle" opacity="0">
+    <animate begin="anim_step1.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    1. 闭包通知
+  </text>
+
+  <circle id="orb2" r="8" fill="#9b59b6" opacity="0">
+    <animateMotion id="anim_step2" begin="indefinite" dur="1s" path="M350,200 L550,200" fill="freeze" />
+    <animate begin="anim_step2.begin" attributeName="opacity" to="1" dur="0.1s" fill="freeze"/>
+  </circle>
+  <text x="450" y="190" font-size="12" fill="#9b59b6" text-anchor="middle" opacity="0">
+    <animate begin="anim_step2.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    2. init ViewModel
+  </text>
+
+  <circle id="orb3" r="8" fill="#9b59b6" opacity="0">
+    <animateMotion id="anim_step3" begin="indefinite" dur="1s" path="M350,250 L750,250" fill="freeze" />
+    <animate begin="anim_step3.begin" attributeName="opacity" to="1" dur="0.1s" fill="freeze"/>
+  </circle>
+  <text x="550" y="240" font-size="12" fill="#9b59b6" text-anchor="middle" opacity="0">
+    <animate begin="anim_step3.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    3. init VC(vm)
+  </text>
+
+  <line x1="750" y1="300" x2="750" y2="300" stroke="#f1c40f" stroke-width="3" stroke-dasharray="5,5" opacity="0">
+    <animate id="anim_step4" begin="indefinite" attributeName="x2" to="550" dur="0.5s" fill="freeze"/>
+    <animate begin="anim_step4.begin" attributeName="opacity" to="1" dur="0.1s" fill="freeze"/>
+  </line>
+  <text x="650" y="290" font-size="12" fill="#f1c40f" text-anchor="middle" opacity="0">
+    <animate begin="anim_step4.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    4. Combine 绑定
+  </text>
+
+  <circle id="orb5" r="8" fill="#3498db" opacity="0">
+    <animateMotion id="anim_step5" begin="indefinite" dur="0.5s" path="M750,350 L550,350" fill="freeze" />
+    <animate begin="anim_step5.begin" attributeName="opacity" to="1" dur="0.1s" fill="freeze"/>
+  </circle>
+  <text x="650" y="340" font-size="12" fill="#3498db" text-anchor="middle" opacity="0">
+    <animate begin="anim_step5.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    5. getFollowers()
+  </text>
+
+  <circle id="orb6" r="8" fill="#2ecc71" opacity="0">
+    <animateMotion id="anim_step6" begin="indefinite" dur="1s" path="M550,400 L950,400" fill="freeze" />
+    <animate begin="anim_step6.begin" attributeName="opacity" to="1" dur="0.1s" fill="freeze"/>
+  </circle>
+  <text x="750" y="390" font-size="12" fill="#2ecc71" text-anchor="middle" opacity="0">
+    <animate begin="anim_step6.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    6. await request
+  </text>
+
+  <circle id="orb7" r="8" fill="#2ecc71" opacity="0">
+    <animateMotion id="anim_step7" begin="indefinite" dur="1s" path="M950,450 L550,450" fill="freeze" />
+    <animate begin="anim_step7.begin" attributeName="opacity" to="1" dur="0.1s" fill="freeze"/>
+  </circle>
+  <text x="750" y="440" font-size="12" fill="#2ecc71" text-anchor="middle" opacity="0">
+    <animate begin="anim_step7.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    7. return [Data]
+  </text>
+
+  <circle id="orb8" r="15" fill="#f1c40f" opacity="0">
+    <animateMotion id="anim_step8" begin="indefinite" dur="0.5s" path="M550,500 L750,500" fill="freeze" />
+    <animate begin="anim_step8.begin" attributeName="opacity" to="0.8" dur="0.1s" fill="freeze"/>
+  </circle>
+  <rect x="680" y="480" width="140" height="40" fill="none" stroke="#f1c40f" stroke-width="3" rx="5" opacity="0">
+     <animate begin="anim_step8.end" attributeName="opacity" values="0;1;0;1;0" dur="1s" fill="freeze"/>
+  </rect>
+  <text x="650" y="490" font-size="12" fill="#f1c40f" text-anchor="middle" opacity="0">
+    <animate begin="anim_step8.begin" attributeName="opacity" to="1" dur="0.5s" fill="freeze"/>
+    8. 广播通知
+  </text>
+
+</svg>

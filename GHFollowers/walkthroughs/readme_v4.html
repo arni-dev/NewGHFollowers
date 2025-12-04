@@ -1,0 +1,137 @@
+<svg width="1100" height="600" viewBox="0 0 1100 600" xmlns="http://www.w3.org/2000/svg" style="background-color:#1e1e1e; font-family: 'Menlo', 'Consolas', monospace;">
+  
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4fc3f7" />
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#66bb6a" />
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ffca28" />
+    </marker>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <text x="50" y="40" fill="#ffffff" font-size="20" font-weight="bold">GHFollowers 核心调用链动态演示</text>
+  <text x="50" y="65" fill="#aaaaaa" font-size="12">观察光点的移动顺序：SearchVC -> Coordinator -> VM -> Network -> VC</text>
+
+  <line x1="100" y1="100" x2="100" y2="550" stroke="#444" stroke-dasharray="5,5"/>
+  <line x1="300" y1="100" x2="300" y2="550" stroke="#444" stroke-dasharray="5,5"/>
+  <line x1="500" y1="100" x2="500" y2="550" stroke="#444" stroke-dasharray="5,5"/>
+  <line x1="700" y1="100" x2="700" y2="550" stroke="#444" stroke-dasharray="5,5"/>
+  <line x1="900" y1="100" x2="900" y2="550" stroke="#444" stroke-dasharray="5,5"/>
+
+  <g transform="translate(100, 100)">
+    <rect x="-60" y="-20" width="120" height="40" rx="5" fill="#2c3e50" stroke="#4fc3f7" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">SearchVC</text>
+  </g>
+  <g transform="translate(300, 100)">
+    <rect x="-70" y="-20" width="140" height="40" rx="5" fill="#2c3e50" stroke="#b39ddb" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" fill="#b39ddb" font-size="12" font-weight="bold">Coordinator</text>
+  </g>
+  <g transform="translate(500, 100)">
+    <rect x="-60" y="-20" width="120" height="40" rx="5" fill="#2c3e50" stroke="#ffca28" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" fill="#ffca28" font-size="12" font-weight="bold">ListVM</text>
+  </g>
+  <g transform="translate(700, 100)">
+    <rect x="-60" y="-20" width="120" height="40" rx="5" fill="#2c3e50" stroke="#4fc3f7" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">ListVC</text>
+  </g>
+  <g transform="translate(900, 100)">
+    <rect x="-60" y="-20" width="120" height="40" rx="5" fill="#2c3e50" stroke="#66bb6a" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" fill="#66bb6a" font-size="12" font-weight="bold">Network</text>
+  </g>
+
+  <path id="path1" d="M100,140 L300,140" fill="none" stroke="#4fc3f7" stroke-width="2" marker-end="url(#arrow-blue)" opacity="0.3"/>
+  <text x="200" y="135" text-anchor="middle" fill="#4fc3f7" font-size="11">1. Closure(username)</text>
+
+  <path id="path2" d="M300,180 L500,180" fill="none" stroke="#4fc3f7" stroke-width="2" marker-end="url(#arrow-blue)" opacity="0.3"/>
+  <text x="400" y="175" text-anchor="middle" fill="#4fc3f7" font-size="11">2. VM(init)</text>
+
+  <path id="path3" d="M300,220 L700,220" fill="none" stroke="#4fc3f7" stroke-width="2" marker-end="url(#arrow-blue)" opacity="0.3"/>
+  <text x="500" y="215" text-anchor="middle" fill="#4fc3f7" font-size="11">3. VC(init with VM)</text>
+
+  <path id="path4" d="M700,280 L500,280" fill="none" stroke="#ffca28" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow-orange)" opacity="0.3"/>
+  <text x="600" y="275" text-anchor="middle" fill="#ffca28" font-size="11">4. sink { updateUI }</text>
+
+  <path id="path5" d="M700,340 L500,340" fill="none" stroke="#4fc3f7" stroke-width="2" marker-end="url(#arrow-blue)" opacity="0.3"/>
+  <text x="600" y="335" text-anchor="middle" fill="#4fc3f7" font-size="11">5. vm.getFollowers()</text>
+
+  <path id="path6" d="M500,400 L900,400" fill="none" stroke="#66bb6a" stroke-width="2" marker-end="url(#arrow-green)" opacity="0.3"/>
+  <text x="700" y="395" text-anchor="middle" fill="#66bb6a" font-size="11">6. await get()</text>
+
+  <path id="path7" d="M900,460 L500,460" fill="none" stroke="#66bb6a" stroke-width="2" marker-end="url(#arrow-green)" opacity="0.3"/>
+  <text x="700" y="455" text-anchor="middle" fill="#66bb6a" font-size="11">7. return [User]</text>
+
+  <path id="path8" d="M500,520 L700,520" fill="none" stroke="#ffca28" stroke-width="2" marker-end="url(#arrow-orange)" opacity="0.3"/>
+  <text x="600" y="515" text-anchor="middle" fill="#ffca28" font-size="11">8. @Published Notify</text>
+
+  <circle r="6" fill="#4fc3f7" filter="url(#glow)">
+    <animateMotion dur="1s" begin="0s;8s" path="M100,140 L300,140" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="1s;9s" fill="freeze" />
+  </circle>
+
+  <circle r="6" fill="#4fc3f7" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="1s;9s" fill="freeze" />
+    <animateMotion dur="0.5s" begin="1s;9s" path="M300,180 L500,180" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="1.5s;9.5s" fill="freeze" />
+  </circle>
+
+  <circle r="6" fill="#4fc3f7" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="1.5s;9.5s" fill="freeze" />
+    <animateMotion dur="1s" begin="1.5s;9.5s" path="M300,220 L700,220" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="2.5s;10.5s" fill="freeze" />
+  </circle>
+
+  <circle r="6" fill="#ffca28" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="2.5s;10.5s" fill="freeze" />
+    <animateMotion dur="0.5s" begin="2.5s;10.5s" path="M700,280 L500,280" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="3s;11s" fill="freeze" />
+  </circle>
+
+  <circle r="6" fill="#4fc3f7" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="3s;11s" fill="freeze" />
+    <animateMotion dur="0.5s" begin="3s;11s" path="M700,340 L500,340" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="3.5s;11.5s" fill="freeze" />
+  </circle>
+
+  <circle r="6" fill="#66bb6a" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="3.5s;11.5s" fill="freeze" />
+    <animateMotion dur="1.5s" begin="3.5s;11.5s" path="M500,400 L900,400" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="5s;13s" fill="freeze" />
+  </circle>
+
+  <circle cx="920" cy="400" r="10" stroke="#66bb6a" stroke-width="2" fill="none" stroke-dasharray="10, 10" opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.5s" begin="4s;12s" />
+    <animateTransform attributeName="transform" type="rotate" from="0 920 400" to="360 920 400" dur="1s" repeatCount="2" begin="4s;12s"/>
+  </circle>
+
+  <circle r="6" fill="#66bb6a" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="5.5s;13.5s" fill="freeze" />
+    <animateMotion dur="1s" begin="5.5s;13.5s" path="M900,460 L500,460" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="6.5s;14.5s" fill="freeze" />
+  </circle>
+
+  <circle r="6" fill="#ffca28" filter="url(#glow)" opacity="0">
+    <animate attributeName="opacity" values="1" dur="0.1s" begin="6.5s;14.5s" fill="freeze" />
+    <animateMotion dur="0.5s" begin="6.5s;14.5s" path="M500,520 L700,520" fill="freeze" />
+    <animate attributeName="opacity" values="1;0" dur="0.1s" begin="7s;15s" fill="freeze" />
+  </circle>
+
+  <rect x="640" y="80" width="120" height="460" fill="#4fc3f7" opacity="0">
+     <animate attributeName="opacity" values="0;0.3;0" dur="0.5s" begin="7s;15s" />
+  </rect>
+  <text x="760" y="525" fill="#4fc3f7" font-size="10" opacity="0">
+      <animate attributeName="opacity" values="0;1;0" dur="1s" begin="7s;15s" />
+      UI Refreshed!
+  </text>
+
+</svg>

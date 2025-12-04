@@ -1,0 +1,174 @@
+<svg width="1200" height="1400" xmlns="http://www.w3.org/2000/svg" style="background-color: #fcfcfc;">
+  <defs>
+    <style>
+      .title { font-family: 'Arial', sans-serif; font-size: 24px; font-weight: bold; fill: #333; }
+      .subtitle { font-family: 'Arial', sans-serif; font-size: 16px; fill: #666; }
+      .file-box { stroke-width: 2; rx: 8; ry: 8; }
+      .file-text { font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; text-anchor: middle; }
+      .lifeline { stroke: #ddd; stroke-width: 2; stroke-dasharray: 8,4; }
+      .method-text { font-family: 'Courier New', monospace; font-size: 13px; fill: #000; font-weight: bold;}
+      .note-box { fill: #fff; stroke: #ccc; stroke-width: 1; rx: 4; }
+      .note-text { font-family: 'Arial', sans-serif; font-size: 12px; fill: #555; }
+      .step-badge { fill: #d9534f; stroke: none; }
+      .step-text { font-family: 'Arial', sans-serif; font-size: 12px; fill: #fff; font-weight: bold; text-anchor: middle; }
+    </style>
+    <marker id="arrow-solid" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 L2,2" fill="#333" />
+    </marker>
+    <marker id="arrow-open" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="2"/>
+    </marker>
+  </defs>
+
+  <text x="50" y="40" class="title">GHFollowers 核心逻辑时序图 (Search -> List)</text>
+  <text x="50" y="70" class="subtitle">包含：Coordinator 路由 | MVVM 依赖注入 | Combine 数据绑定 | Async/Await 网络请求</text>
+
+  <g transform="translate(100, 100)">
+    <rect x="-80" y="0" width="160" height="50" fill="#e3f2fd" stroke="#2196f3" class="file-box"/>
+    <text x="0" y="30" class="file-text" fill="#0d47a1">SearchVC.swift</text>
+    <line x1="0" y1="50" x2="0" y2="1250" class="lifeline"/>
+  </g>
+
+  <g transform="translate(350, 100)">
+    <rect x="-90" y="0" width="180" height="50" fill="#e8eaf6" stroke="#3f51b5" class="file-box"/>
+    <text x="0" y="30" class="file-text" fill="#1a237e">SearchCoordinator.swift</text>
+    <line x1="0" y1="50" x2="0" y2="1250" class="lifeline"/>
+  </g>
+
+  <g transform="translate(650, 100)">
+    <rect x="-90" y="0" width="180" height="50" fill="#fff8e1" stroke="#ffc107" class="file-box"/>
+    <text x="0" y="30" class="file-text" fill="#ff6f00">FollowerListVM.swift</text>
+    <line x1="0" y1="50" x2="0" y2="1250" class="lifeline"/>
+  </g>
+
+  <g transform="translate(900, 100)">
+    <rect x="-80" y="0" width="160" height="50" fill="#e3f2fd" stroke="#2196f3" class="file-box"/>
+    <text x="0" y="30" class="file-text" fill="#0d47a1">FollowerListVC.swift</text>
+    <line x1="0" y1="50" x2="0" y2="1250" class="lifeline"/>
+  </g>
+
+  <g transform="translate(1100, 100)">
+    <rect x="-80" y="0" width="160" height="50" fill="#e8f5e9" stroke="#4caf50" class="file-box"/>
+    <text x="0" y="30" class="file-text" fill="#1b5e20">NetworkManager.swift</text>
+    <line x1="0" y1="50" x2="0" y2="1250" class="lifeline"/>
+  </g>
+
+
+  <g transform="translate(0, 180)">
+    <circle cx="100" cy="0" r="12" class="step-badge"/>
+    <text x="100" y="4" class="step-text">1</text>
+    <line x1="100" y1="0" x2="350" y2="0" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow-solid)"/>
+    <text x="130" y="-10" class="method-text">closure(username)</text>
+    
+    <rect x="130" y="10" width="200" height="45" class="note-box"/>
+    <text x="140" y="30" class="note-text">SearchVC 不直接跳转。</text>
+    <text x="140" y="45" class="note-text">通过闭包通知 Coordinator。</text>
+  </g>
+
+  <g transform="translate(0, 280)">
+    <rect x="345" y="-30" width="10" height="60" fill="#ccc"/>
+    <circle cx="350" cy="0" r="12" class="step-badge"/>
+    <text x="350" y="4" class="step-text">2</text>
+    <text x="370" y="5" class="method-text">goToFollowerList(username)</text>
+    
+    <rect x="370" y="15" width="240" height="30" class="note-box" fill="#f0f0f0"/>
+    <text x="380" y="35" class="note-text" font-style="italic">Coordinator 收到通知，开始干活</text>
+  </g>
+
+  <g transform="translate(0, 360)">
+    <circle cx="350" cy="0" r="12" class="step-badge"/>
+    <text x="350" y="4" class="step-text">3</text>
+    <line x1="350" y1="0" x2="650" y2="0" stroke="#333" stroke-width="2" marker-end="url(#arrow-solid)"/>
+    <text x="400" y="-10" class="method-text">init(username: String)</text>
+    
+    <rect x="400" y="10" width="220" height="45" class="note-box"/>
+    <text x="410" y="30" class="note-text">首先创建 ViewModel。</text>
+    <text x="410" y="45" class="note-text">它持有业务数据 (username)。</text>
+  </g>
+
+  <g transform="translate(0, 440)">
+    <circle cx="350" cy="0" r="12" class="step-badge"/>
+    <text x="350" y="4" class="step-text">4</text>
+    <line x1="350" y1="0" x2="900" y2="0" stroke="#333" stroke-width="2" marker-end="url(#arrow-solid)"/>
+    <text x="400" y="-10" class="method-text">init(viewModel: vm)</text>
+    
+    <rect x="400" y="10" width="280" height="60" class="note-box" stroke="#d9534f"/>
+    <text x="410" y="30" class="note-text" fill="#d9534f" font-weight="bold">关键点: 依赖注入 (DI)</text>
+    <text x="410" y="48" class="note-text">Coordinator 把 VM 塞给 VC。</text>
+    <text x="410" y="63" class="note-text">VC 不自己创建 VM，实现解耦。</text>
+  </g>
+
+  <g transform="translate(0, 540)">
+    <circle cx="350" cy="0" r="12" class="step-badge"/>
+    <text x="350" y="4" class="step-text">5</text>
+    <text x="370" y="-5" class="method-text">navController.push(vc)</text>
+    <line x1="350" y1="20" x2="350" y2="50" stroke="#333" stroke-width="2"/>
+    <rect x="370" y="10" width="180" height="30" class="note-box"/>
+    <text x="380" y="30" class="note-text">只有 Coordinator 操作导航堆栈</text>
+  </g>
+
+  <g transform="translate(0, 620)">
+    <rect x="895" y="-20" width="10" height="600" fill="#e3f2fd" opacity="0.5"/>
+    <circle cx="900" cy="0" r="12" class="step-badge"/>
+    <text x="900" y="4" class="step-text">6</text>
+    <text x="920" y="5" class="method-text">viewDidLoad()</text>
+    
+    <path d="M900,40 C800,40 750,40 650,40" stroke="#ff9800" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow-open)"/>
+    <text x="700" y="30" class="method-text" fill="#ff9800" font-size="11">Combine: $followers.sink {}</text>
+    
+    <rect x="680" y="55" width="200" height="45" class="note-box"/>
+    <text x="690" y="75" class="note-text">VC 订阅 VM 的数据变化。</text>
+    <text x="690" y="90" class="note-text">一旦数据变动，闭包自动执行。</text>
+  </g>
+
+  <g transform="translate(0, 750)">
+    <circle cx="900" cy="0" r="12" class="step-badge"/>
+    <text x="900" y="4" class="step-text">7</text>
+    <line x1="900" y1="0" x2="650" y2="0" stroke="#333" stroke-width="2" marker-end="url(#arrow-solid)"/>
+    <text x="700" y="-10" class="method-text">vm.getFollowers()</text>
+    
+    <rect x="700" y="10" width="160" height="30" class="note-box"/>
+    <text x="710" y="30" class="note-text">VC 告诉 VM: "我要数据"</text>
+  </g>
+
+  <g transform="translate(0, 820)">
+    <circle cx="650" cy="0" r="12" class="step-badge"/>
+    <text x="650" y="4" class="step-text">8</text>
+    <text x="500" y="5" class="method-text">isLoading = true</text>
+    <path d="M650,20 C750,20 800,20 900,20" stroke="#ff9800" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow-solid)"/>
+    <text x="740" y="15" font-size="10" fill="#ff9800">[自动通知 VC 显示转圈]</text>
+  </g>
+
+  <g transform="translate(0, 900)">
+    <circle cx="650" cy="0" r="12" class="step-badge"/>
+    <text x="650" y="4" class="step-text">9</text>
+    <line x1="650" y1="0" x2="1100" y2="0" stroke="#4caf50" stroke-width="3" marker-end="url(#arrow-solid)"/>
+    <text x="700" y="-10" class="method-text" fill="#2e7d32">await NetworkManager.getFollowers()</text>
+    
+    <rect x="750" y="10" width="250" height="45" class="note-box"/>
+    <text x="760" y="30" class="note-text">线程切换: Task { await ... }</text>
+    <text x="760" y="45" class="note-text">VM 等待网络返回，不卡死主线程。</text>
+  </g>
+
+  <g transform="translate(0, 1000)">
+    <rect x="1095" y="-100" width="10" height="100" fill="#e8f5e9"/>
+    <circle cx="1100" cy="0" r="12" class="step-badge"/>
+    <text x="1100" y="4" class="step-text">10</text>
+    <line x1="1100" y1="0" x2="650" y2="0" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-solid)"/>
+    <text x="800" y="-10" class="method-text" fill="#2e7d32">return [Follower]</text>
+  </g>
+
+  <g transform="translate(0, 1100)">
+    <circle cx="650" cy="0" r="12" class="step-badge"/>
+    <text x="650" y="4" class="step-text">11</text>
+    <text x="500" y="5" class="method-text">self.followers = data</text>
+    
+    <line x1="650" y1="30" x2="900" y2="30" stroke="#ff9800" stroke-width="3" marker-end="url(#arrow-solid)"/>
+    <text x="700" y="25" class="method-text" fill="#ff9800">Combine Publish (自动触发)</text>
+    
+    <rect x="910" y="10" width="220" height="60" class="note-box" stroke="#2196f3"/>
+    <text x="920" y="30" class="note-text" font-weight="bold">VC 接收到新数据</text>
+    <text x="920" y="45" class="note-text">调用 updateData(on: followers)</text>
+    <text x="920" y="60" class="note-text">DiffableDataSource 刷新列表</text>
+  </g>
+</svg>

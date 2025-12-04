@@ -1,0 +1,58 @@
+/* 
+  Localizable.strings (English)
+  GHFollowers
+  
+  Created by CHI YU CHAN on 4/12/2024.
+*/
+
+// MARK: - Error Messages
+"error.invalidURL" = "There was an error building the URL. Please try again.";
+"error.unableToComplete" = "Unable to complete your request, Please check your internet connection.";
+"error.invalidResponse" = "Invalid response from the server. Please try again.";
+"error.invalidData" = "The data received from the server was invalid. Please try again.";
+"error.unableToFavorite" = "There was an error favoriting this user. Please try again.";
+"error.alreadyInFavorites" = "You've already favorited this user. you must REALLY like them.";
+
+// MARK: - Search Screen
+"search.emptyUsername" = "Empty Username";
+"search.emptyUsernameMessage" = "Please enter a username. We need to know who to look for 😀";
+"search.getFollowers" = "Get Followers";
+
+// MARK: - Follower List Screen
+"followerList.noFollowers" = "No Followers";
+"followerList.noFollowersMessage" = "This user does not have followers. Go follow them.";
+"followerList.searchPlaceholder" = "Search for a username";
+"followerList.success" = "Success!";
+"followerList.favoriteSuccessMessage" = "You have successfully favorited this user.";
+"followerList.hooray" = "Hooray!";
+
+// MARK: - User Info Screen
+"userInfo.invalidURL" = "Invalid URL";
+"userInfo.invalidURLMessage" = "The url attached to this user is invalid";
+"userInfo.noFollowers" = "No Followers";
+"userInfo.noFollowersMessage" = "This user has no followers. What a shame 😳.";
+"userInfo.soSad" = "So sad";
+"userInfo.githubSince" = "GithHub since %@";
+
+// MARK: - Favorites Screen
+"favorites.title" = "Favorites";
+"favorites.noFavorites" = "No Favorites";
+"favorites.noFavoritesMessage" = "Add a favorite on the follower list screen";
+"favorites.unableToRemove" = "Unable to remove";
+
+// MARK: - Alert
+"alert.defaultTitle" = "Something went wrong";
+"alert.defaultMessage" = "Unable to complete request";
+"alert.ok" = "Ok";
+"alert.somethingWentWrong" = "Something Went Wrong";
+"alert.badStuffHappened" = "Bad Stuff Happened";
+"alert.retry" = "We were unable to complete your task at this time. Please try again.";
+
+
+// MARK: - Item Info
+"itemInfo.publicRepos" = "Public Repos";
+"itemInfo.publicGists" = "Public Gists";
+"itemInfo.following" = "Following";
+"itemInfo.followers" = "Followers";
+"itemInfo.getFollowers" = "Get Followers";
+"itemInfo.githubProfile" = "GitHub Profile";

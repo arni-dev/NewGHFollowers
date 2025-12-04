@@ -1,0 +1,436 @@
+<svg width="1200" height="1100" viewBox="0 0 1200 1100" xmlns="http://www.w3.org/2000/svg" onload="init()">
+  <style>
+    /* 基础字体设置 */
+    text { font-family: 'Menlo', 'Consolas', 'Monaco', monospace; }
+    
+    /* 泳道线 */
+    .lane-line { stroke: #444; stroke-width: 2; stroke-dasharray: 8,4; }
+    
+    /* 角色头部 */
+    .actor-header { fill: #2c3e50; stroke: #fff; stroke-width: 2; rx: 8; }
+    .actor-title { fill: #ecf0f1; font-size: 16px; font-weight: bold; text-anchor: middle; }
+    .actor-desc { fill: #95a5a6; font-size: 12px; text-anchor: middle; }
+    
+    /* 底部面板背景 */
+    .dashboard-bg { fill: #1e1e1e; stroke: #555; stroke-width: 2; }
+    .panel-title { fill: #f39c12; font-size: 15px; font-weight: bold; }
+    
+    /* 代码和注释文字颜色 */
+    .code-line { fill: #a29bfe; font-size: 14px; } 
+    .desc-line { fill: #bdc3c7; font-size: 14px; }
+    
+    /* 按钮样式 */
+    .btn-rect { fill: #27ae60; rx: 6; cursor: pointer; }
+    .btn-rect:hover { fill: #2ecc71; }
+    .btn-text { fill: white; font-size: 18px; font-weight: bold; text-anchor: middle; pointer-events: none; }
+
+    /* 动态连线基础样式 */
+    .flow-line { fill: none; stroke-width: 4; }
+  </style>
+
+  <script type="text/ecmascript">
+    <![CDATA[
+      var step = 0;
+      var totalSteps = 10;
+      var ns = "http://www.w3.org/2000/svg";
+      
+      // 数据结构：已手动分行，确保不溢出
+      var steps = [
+        {
+          id: 1,
+          from: 150, to: 350, y: 150,
+          type: "closure",
+          func: "didRequestFollowers(username)",
+          code: [
+            "var didRequestFollowers: ((String) -> Void)?",
+            "",
+            "@objc func pushFollowerListVC() {",
+            "    // SearchVC 不直接跳转，只发送通知",
+            "    didRequestFollowers?(username)",
+            "}"
+          ],
+          desc: [
+            "【解耦关键】",
+            "SearchVC 不包含 navigation.push 代码。",
+            "它通过闭包向上级汇报。",
+            "SearchVC 不知道下一个页面是谁。"
+          ]
+        },
+        {
+          id: 2,
+          from: 350, to: 600, y: 200,
+          type: "logic",
+          func: "let vm = FollowerListVM(username)",
+          code: [
+            "func gotoFollowerList(username: String) {",
+            "    // 1. Coordinator 初始化 ViewModel",
+            "    let vm = FollowerListViewModel(username: username)",
+            "    // ...",
+            "}"
+          ],
+          desc: [
+            "【Coordinator模式】",
+            "Coordinator 收到通知。",
+            "第一件事是初始化 ViewModel。",
+            "将业务数据(username)传递给 VM。"
+          ]
+        },
+        {
+          id: 3,
+          from: 350, to: 850, y: 250,
+          type: "di",
+          func: "let vc = FollowerListVC(vm)",
+          code: [
+            "    // 2. 初始化 VC 并注入 VM",
+            "    let vc = FollowerListVC(viewModel: vm)",
+            "    // 3. 执行跳转",
+            "    navigationController.pushViewController(vc, animated: true)",
+            "}"
+          ],
+          desc: [
+            "【依赖注入(DI)】",
+            "Coordinator 把 VM 注入到 VC 中。",
+            "VC 拥有了数据源，但不需要自己创建它。",
+            "这让单元测试变得非常容易。"
+          ]
+        },
+        {
+          id: 4,
+          from: 850, to: 600, y: 300,
+          type: "combine",
+          func: "vm.$followers.sink { ... }",
+          code: [
+            "// inside FollowerListVC.viewDidLoad()",
+            "vm.$followers",
+            "    .receive(on: RunLoop.main)",
+            "    .sink { [weak self] followers in ",
+            "        self?.updateUI(followers) ",
+            "    }",
+            "    .store(in: &cancellables)"
+          ],
+          desc: [
+            "【数据绑定】",
+            "VC 加载后，立即订阅 VM 的属性。",
+            "此时没有数据，但建立了‘管道’。",
+            "一旦数据变化，sink 闭包会自动执行。"
+          ]
+        },
+        {
+          id: 5,
+          from: 850, to: 600, y: 400,
+          type: "call",
+          func: "vm.getFollowers()",
+          code: [
+            "// inside FollowerListVC",
+            "vm.getFollowers()",
+            "",
+            "// VC 只是告诉 VM ‘我要数据’。",
+            "// VC 不关心数据来源。"
+          ],
+          desc: [
+            "【触发请求】",
+            "视图层向逻辑层发出指令。",
+            "这是单向命令，不等待返回值。",
+            "数据回来后会通过 sink 通知。"
+          ]
+        },
+        {
+          id: 6,
+          from: 600, to: 1050, y: 480,
+          type: "async",
+          func: "await NetworkManager.shared.get()",
+          code: [
+            "// inside ViewModel",
+            "func getFollowers() {",
+            "    isLoading = true",
+            "    Task {",
+            "        // 异步调用网络层",
+            "        let list = try await NetworkManager.get(...)",
+            "    }",
+            "}"
+          ],
+          desc: [
+            "【异步并发】",
+            "ViewModel 开启一个 Task (协程)。",
+            "线程切换到后台 I/O 线程。",
+            "主线程不会卡顿 (Loading 转圈不卡)。"
+          ]
+        },
+        {
+          id: 7,
+          from: 1050, to: 600, y: 560,
+          type: "return",
+          func: "return [Follower]",
+          code: [
+            "// inside NetworkManager",
+            "let (data, _) = try await URLSession.shared.data(from: url)",
+            "let decoder = JSONDecoder()",
+            "return try decoder.decode([Follower].self, from: data)"
+          ],
+          desc: [
+            "【数据返回】",
+            "网络层完成 JSON 解析。",
+            "返回纯 Swift 对象数组 ([Follower])。",
+            "数据直接回传给 VM。"
+          ]
+        },
+        {
+          id: 8,
+          from: 600, to: 850, y: 640,
+          type: "combine_trigger",
+          func: "self.followers = newFollowers",
+          code: [
+            "// inside ViewModel",
+            "self.followers = followers ",
+            "",
+            "// 重点：followers 被 @Published 修饰。",
+            "// 这行赋值会自动触发 Combine 信号。",
+            "// 不需要写 delegate 代理回调。"
+          ],
+          desc: [
+            "【响应式核心】",
+            "VM 仅仅更新了自己的属性。",
+            "Combine 框架负责广播这个变更。",
+            "实现了状态驱动 UI。"
+          ]
+        },
+        {
+          id: 9,
+          from: 850, to: 850, y: 720,
+          type: "ui",
+          func: "updateData(on: followers)",
+          code: [
+            "// inside FollowerListVC (Sink Closure)",
+            "self.updateData(on: followers)",
+            "",
+            "// 使用 DiffableDataSource 刷新列表",
+            "// 流程结束。"
+          ],
+          desc: [
+            "【UI刷新 - 闭环完成】",
+            "VC 之前埋好的 sink 闭包被触发。",
+            "拿到最新数据，刷新界面。",
+            "VC 自己调用自己的方法 (箭头回环)。"
+          ]
+        }
+      ];
+
+      function init() {
+        // 初始化时不显示第一步，只显示欢迎信息
+        updateBoard(0);
+      }
+
+      function nextStep() {
+        if (step >= steps.length) {
+          reset();
+          return;
+        }
+        
+        var currentData = steps[step];
+        step++;
+        
+        drawFlow(currentData);
+        updateBoard(currentData);
+        
+        var btnText = document.getElementById("btn-text");
+        var btnRect = document.getElementById("btn-rect");
+        
+        if (step >= steps.length) {
+          btnText.textContent = "演示结束 (点击重置)";
+          btnRect.setAttribute("fill", "#e74c3c");
+        } else {
+          btnText.textContent = "执行下一步 (" + step + "/" + steps.length + ")";
+          btnRect.setAttribute("fill", "#27ae60");
+        }
+      }
+      
+      function reset() {
+        step = 0;
+        var dynamicGroup = document.getElementById("dynamic-layer");
+        while (dynamicGroup.firstChild) {
+          dynamicGroup.removeChild(dynamicGroup.firstChild);
+        }
+        document.getElementById("btn-text").textContent = "开始单步调试";
+        document.getElementById("btn-rect").setAttribute("fill", "#27ae60");
+        updateBoard(0);
+      }
+
+      function drawFlow(data) {
+        var group = document.getElementById("dynamic-layer");
+        var path = document.createElementNS(ns, "path");
+        var color = getColor(data.type);
+        var markerId = "url(#arrow)";
+        
+        // 如果是最后一步（第9步），使用特大号箭头
+        if (data.id === 9) {
+            markerId = "url(#arrow-large)";
+        }
+        
+        var d = "";
+        if (data.from == data.to) {
+           // 自循环箭头 - 加大弧度和半径，确保显眼
+           // 起点 (850, 710) -> 拉得更开 -> 终点 (850, 750)
+           d = "M" + data.from + "," + (data.y - 10) + 
+               " C" + (data.from + 120) + "," + (data.y - 10) + 
+               " " + (data.from + 120) + "," + (data.y + 50) + 
+               " " + data.from + "," + (data.y + 50);
+        } else {
+           d = "M" + data.from + "," + data.y + " L" + data.to + "," + data.y;
+        }
+        
+        path.setAttribute("d", d);
+        path.setAttribute("stroke", color);
+        path.setAttribute("class", "flow-line");
+        path.setAttribute("marker-end", markerId);
+        
+        // 连线动画
+        var anim = document.createElementNS(ns, "animate");
+        anim.setAttribute("attributeName", "stroke-dasharray");
+        anim.setAttribute("from", "0, 1000");
+        anim.setAttribute("to", "1000, 0");
+        anim.setAttribute("dur", "0.5s");
+        anim.setAttribute("fill", "freeze");
+        path.appendChild(anim);
+        group.appendChild(path);
+        
+        // 步骤标签
+        var text = document.createElementNS(ns, "text");
+        var textX = (data.from + data.to) / 2;
+        if(data.from == data.to) textX = data.from + 130; // 自循环标签向右大偏移
+        
+        text.setAttribute("x", textX);
+        text.setAttribute("y", data.y - 15);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("fill", color);
+        text.setAttribute("font-size", "15px");
+        text.setAttribute("font-weight", "bold");
+        text.textContent = data.id + ". " + data.func;
+        
+        // 标签淡入
+        var animOp = document.createElementNS(ns, "animate");
+        animOp.setAttribute("attributeName", "opacity");
+        animOp.setAttribute("from", "0");
+        animOp.setAttribute("to", "1");
+        animOp.setAttribute("dur", "0.4s");
+        animOp.setAttribute("fill", "freeze");
+        text.appendChild(animOp);
+        group.appendChild(text);
+        
+        // 起点圆点
+        var circle = document.createElementNS(ns, "circle");
+        circle.setAttribute("cx", data.from);
+        circle.setAttribute("cy", data.y);
+        circle.setAttribute("r", "6");
+        circle.setAttribute("fill", color);
+        group.appendChild(circle);
+      }
+
+      function updateBoard(data) {
+        var codeGroup = document.getElementById("code-lines");
+        var descGroup = document.getElementById("desc-lines");
+        
+        // 清除旧的文字行
+        while (codeGroup.firstChild) codeGroup.removeChild(codeGroup.firstChild);
+        while (descGroup.firstChild) descGroup.removeChild(descGroup.firstChild);
+        
+        if (data === 0) {
+           renderLines(codeGroup, ["等待开始..."], "code-line");
+           renderLines(descGroup, ["点击下方绿色按钮，开始演示。"], "desc-line");
+           return;
+        }
+        
+        renderLines(codeGroup, data.code, "code-line");
+        renderLines(descGroup, data.desc, "desc-line");
+      }
+
+      // 手动逐行渲染函数 - 解决换行问题的核心
+      function renderLines(container, lines, className) {
+        if (!lines) return;
+        for (var i = 0; i < lines.length; i++) {
+            var t = document.createElementNS(ns, "text");
+            t.setAttribute("x", 0);
+            t.setAttribute("y", i * 22); // 行高 22px
+            t.setAttribute("class", className);
+            t.textContent = lines[i];
+            container.appendChild(t);
+        }
+      }
+      
+      function getColor(type) {
+        switch(type) {
+            case "closure": return "#e74c3c"; 
+            case "logic": return "#f39c12"; 
+            case "di": return "#9b59b6"; 
+            case "combine": return "#3498db"; 
+            case "call": return "#fff"; 
+            case "async": return "#2ecc71"; 
+            case "return": return "#2ecc71"; 
+            case "combine_trigger": return "#f1c40f"; 
+            case "ui": return "#3498db"; 
+            default: return "#fff";
+        }
+      }
+    ]]>
+  </script>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#bdc3c7" />
+    </marker>
+    
+    <marker id="arrow-large" markerWidth="20" markerHeight="20" refX="18" refY="6" orient="auto">
+      <path d="M0,0 L0,12 L18,6 z" fill="#3498db" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#121212" />
+
+  <g transform="translate(0, 50)">
+      <line x1="150" y1="50" x2="150" y2="780" class="lane-line"/>
+      <rect x="80" y="0" width="140" height="50" class="actor-header"/>
+      <text x="150" y="20" class="actor-title">SearchVC</text>
+      <text x="150" y="40" class="actor-desc">UI / View</text>
+
+      <line x1="350" y1="50" x2="350" y2="780" class="lane-line"/>
+      <rect x="280" y="0" width="140" height="50" class="actor-header" stroke="#9b59b6"/>
+      <text x="350" y="20" class="actor-title">Coordinator</text>
+      <text x="350" y="40" class="actor-desc">Navigation</text>
+
+      <line x1="600" y1="50" x2="600" y2="780" class="lane-line"/>
+      <rect x="530" y="0" width="140" height="50" class="actor-header" stroke="#f39c12"/>
+      <text x="600" y="20" class="actor-title">ViewModel</text>
+      <text x="600" y="40" class="actor-desc">Logic / State</text>
+
+      <line x1="850" y1="50" x2="850" y2="780" class="lane-line"/>
+      <rect x="780" y="0" width="140" height="50" class="actor-header"/>
+      <text x="850" y="20" class="actor-title">FollowerListVC</text>
+      <text x="850" y="40" class="actor-desc">UI / View</text>
+      
+      <line x1="1050" y1="50" x2="1050" y2="780" class="lane-line"/>
+      <rect x="980" y="0" width="140" height="50" class="actor-header" stroke="#2ecc71"/>
+      <text x="1050" y="20" class="actor-title">Network</text>
+      <text x="1050" y="40" class="actor-desc">Service</text>
+  </g>
+
+  <g id="dynamic-layer" transform="translate(0, 50)"></g>
+
+  <g transform="translate(450, 850)" onclick="nextStep()">
+    <rect id="btn-rect" x="0" y="0" width="300" height="40" class="btn-rect" />
+    <text id="btn-text" x="150" y="27" class="btn-text">开始单步调试</text>
+  </g>
+
+  <g transform="translate(20, 910)">
+    <rect x="0" y="0" width="570" height="180" rx="5" class="dashboard-bg" />
+    <text x="20" y="25" class="panel-title">Swift Code Context (当前执行代码)</text>
+    <line x1="0" y1="35" x2="570" y2="35" stroke="#444" stroke-width="1"/>
+    
+    <g transform="translate(20, 60)" id="code-lines"></g>
+
+    <rect x="590" y="0" width="570" height="180" rx="5" class="dashboard-bg" />
+    <text x="610" y="25" class="panel-title">Architecture Analysis (架构深度注释)</text>
+    <line x1="590" y1="35" x2="1160" y2="35" stroke="#444" stroke-width="1"/>
+    
+    <g transform="translate(610, 60)" id="desc-lines"></g>
+  </g>
+
+</svg>

@@ -1,0 +1,2 @@
+# NewGHFollowers
+这个项目是一个中文版的GHFollowers，主要是用来学习swift的新特性，来源于作者：billycychan/GHFollowers，请为原作者点star。
